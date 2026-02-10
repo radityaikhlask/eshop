@@ -62,4 +62,56 @@ class ProductRepositoryTest {
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
     }
+    @Test
+    void testEditSuccess() {
+        Product product = new Product();
+        product.setProductId("6f123");
+        product.setProductName("Original Name");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("6f123");
+        updatedProduct.setProductName("Updated Name");
+        updatedProduct.setProductQuantity(20);
+        productRepository.update(updatedProduct);
+
+        Product result = productRepository.findById("6f123");
+        assertEquals("Updated Name", result.getProductName());
+        assertEquals(20, result.getProductQuantity());
+    }
+
+    @Test
+    void testEditNotFound() {
+        Product product = new Product();
+        product.setProductId("existing-id");
+        productRepository.create(product);
+
+        Product nonExistentProduct = new Product();
+        nonExistentProduct.setProductId("wrong-id");
+        nonExistentProduct.setProductName("Ghost");
+        Product result = productRepository.update(nonExistentProduct);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testDeleteSuccess() {
+        Product product = new Product();
+        product.setProductId("delete-me");
+        productRepository.create(product);
+
+        productRepository.delete("delete-me");
+        Product result = productRepository.findById("delete-me");
+        assertNull(result);
+    }
+
+    @Test
+    void testDeleteNonExistent() {
+        productRepository.delete("non-existent-id");
+        // Should not throw exception; repository remains empty
+        Iterator<Product> iterator = productRepository.findAll();
+        assertFalse(iterator.hasNext());
+    }
 }
+
