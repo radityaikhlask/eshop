@@ -17,6 +17,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product) {
+        // Generate a unique ID if one doesn't exist
+        if (product.getProductId() == null) {
+            product.setProductId(java.util.UUID.randomUUID().toString());
+        }
         productRepository.create(product);
         return product;
     }
@@ -27,5 +31,14 @@ public class ProductServiceImpl implements ProductService {
         List<Product> allProducts = new ArrayList<>();
         productIterator.forEachRemaining(allProducts::add);
         return allProducts;
+    }
+    @Override
+    public Product findById(String id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public void update(Product product) {
+        productRepository.update(product);
     }
 }
