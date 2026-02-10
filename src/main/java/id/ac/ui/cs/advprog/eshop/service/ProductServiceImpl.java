@@ -17,6 +17,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product) {
+        // This ensures every product has a unique ID for Edit/Delete to work
         // Generate a unique ID if one doesn't exist
         if (product.getProductId() == null) {
             product.setProductId(java.util.UUID.randomUUID().toString());
@@ -33,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
         return allProducts;
     }
     @Override
+    public void delete(String id) {
+        productRepository.delete(id);
     public Product findById(String id) {
         return productRepository.findById(id);
     }
