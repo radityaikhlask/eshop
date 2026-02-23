@@ -4,6 +4,7 @@ val webdrivermanagerVersion = "5.6.3"
 
 plugins {
     java
+    jacoco
     id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -39,13 +40,26 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
     testImplementation("org.springframework.boot:spring-boot-starter-thymeleaf-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 
     testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
     testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
     testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
+}
+
+tasks.test {
+    useJUnitPlatform()
+
+    filter {
+        excludeTestsMatching("*FunctionalTest")
+    }
+
+    finalizedBy(tasks.named("jacocoTestReport"))
+}
+
+tasks.named("jacocoTestReport") {
+    dependsOn(tasks.test)
 }
 
 tasks.register<Test>("unitTest") {
@@ -64,8 +78,4 @@ tasks.register<Test>("functionalTest") {
     filter {
         includeTestsMatching("*FunctionalTest")
     }
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }
