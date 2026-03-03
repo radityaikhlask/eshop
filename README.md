@@ -19,3 +19,49 @@ Reflection 2
 Yes, the current setup meets the definition of Continuous Integration because every push and pull request automatically triggers workflows that build the project, run all test suites, and perform code quality analysis using SonarCloud. This ensures that new changes are continuously integrated and validated, and any errors or quality issues are detected early.
 It also meets the definition of Continuous Deployment because once changes are merged into the deployment branch, the application is automatically deployed to the PaaS (Render) without manual intervention.
 This means the latest stable version of the application is consistently delivered to a running environment, fulfilling the core principles of CI/CD.
+
+Module 03:
+1. SOLID Principles Applied
+In this module, I refactored the Car feature to follow SOLID principles. The principles applied are:
+a. Single Responsibility Principle (SRP)
+Each class now has one clear responsibility:
+- CarController handles HTTP requests related to Car.
+- CarService / CarServiceImpl handles business logic.
+- CarRepository handles data persistence abstraction.
+- InMemoryCarRepository handles the concrete storage implementation.
+Each layer is responsible only for its own concern, making the system easier to understand and maintain.
+b. Dependency Inversion Principle (DIP)
+High-level modules no longer depend on low-level implementations.
+CarController depends on CarService (interface), not CarServiceImpl.
+CarServiceImpl depends on CarRepository (interface), not InMemoryCarRepository.
+This ensures that high-level logic depends on abstractions, not concrete implementations. If the repository implementation changes, the controller and service layers remain unchanged. 
+c. Open-Closed Principle (OCP)
+The system is now open for extension but closed for modification.
+Because CarRepository is an interface, new implementations can be added (e.g., DatabaseCarRepository, JpaCarRepository) without modifying existing service or controller code.
+New functionality is introduced by extending behavior rather than modifying stable code.
+
+2. Advantages of Applying SOLID
+a. Easier Testing
+Since the controller and service depend on interfaces, dependencies can be mocked during testing. This improves testability and allows isolated unit testing of each layer.
+b. Better Maintainability
+Each class has a focused responsibility. If a bug appears in data handling, we inspect the repository. If the issue is related to request handling, we inspect the controller.
+This separation reduces debugging complexity and improves maintainability. 
+c. Improved Flexibility
+If the project later requires database persistence instead of in-memory storage, a new repository implementation can be created without modifying the service or controller layers.
+This makes the system adaptable to future requirements.
+d. Cleaner Architecture
+The dependency structure becomes:
+Controller → Service (interface) → Repository (interface) → Implementation
+This layered architecture improves clarity and scalability.
+
+3. Disadvantages If SOLID Is Not Applied
+If SOLID principles were not applied:
+a. Tight Coupling
+If the controller directly depends on concrete service implementations, and services depend on concrete repositories, changes in one layer would affect others. This increases maintenance cost and risk of regression bugs.
+b. Difficult Extension
+Without abstraction at the repository level, changing storage implementation would require modifying existing service code. This violates the Open-Closed Principle.
+c. Harder Testing
+Without interfaces, dependencies cannot be easily replaced or mocked. This makes unit testing more difficult and less reliable.
+d. Reduced Code Clarity
+If responsibilities are mixed between layers (e.g., controller containing business logic), the system becomes harder to read, scale, and maintain.
+
