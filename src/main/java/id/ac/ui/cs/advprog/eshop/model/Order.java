@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Builder
 @Getter
 public class Order {
