@@ -24,25 +24,25 @@ public class Payment {
         this.paymentData = paymentData;
 
         if (method.equals("Voucher Code")) {
-            String voucherCode = paymentData.get("voucherCode");
-            if (voucherCode != null
-                    && voucherCode.length() == 16
-                    && voucherCode.startsWith("ESHOP")
-                    && voucherCode.replaceAll("[^0-9]", "").length() == 8) {
-                this.status = "SUCCESS";
-            } else {
-                this.status = "REJECTED";
-            }
+            this.status = isValidVoucher(paymentData) ? "SUCCESS" : "REJECTED";
         } else if (method.equals("Cash On Delivery")) {
-            String address = paymentData.get("address");
-            String deliveryFee = paymentData.get("deliveryFee");
-
-            if (address != null && !address.isEmpty()
-                    && deliveryFee != null && !deliveryFee.isEmpty()) {
-                this.status = "SUCCESS";
-            } else {
-                this.status = "REJECTED";
-            }
+            this.status = isValidCod(paymentData) ? "SUCCESS" : "REJECTED";
         }
+    }
+
+    private boolean isValidVoucher(Map<String, String> paymentData) {
+        String voucherCode = paymentData.get("voucherCode");
+        return voucherCode != null
+                && voucherCode.length() == 16
+                && voucherCode.startsWith("ESHOP")
+                && voucherCode.replaceAll("[^0-9]", "").length() == 8;
+    }
+
+    private boolean isValidCod(Map<String, String> paymentData) {
+        String address = paymentData.get("address");
+        String deliveryFee = paymentData.get("deliveryFee");
+
+        return address != null && !address.isEmpty()
+                && deliveryFee != null && !deliveryFee.isEmpty();
     }
 }
