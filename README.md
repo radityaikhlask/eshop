@@ -82,3 +82,11 @@ The unit tests created in this tutorial generally follow the F.I.R.S.T. principl
 - Timely: The tests were written before implementing the actual functionality, which follows the core idea of TDD.
 
 One improvement that could be made is making the tests even more focused on single behaviors, so that each test verifies only one specific condition. This would make failures easier to diagnose. In future test development, I would also try to improve naming clarity and ensure that each test case represents a clear scenario.
+
+Bonus 2 Reflection
+
+I reviewed my teammate's implementation of the payment feature. The functionality works correctly, but the addPayment method contained complex conditional logic that handled multiple responsibilities at once, including payment creation, validation, and status assignment.
+
+The main code smell identified was complex conditional logic that reduced readability and maintainability. I refactored the code by extracting the status decision logic into a helper method and separating COD validation into its own method. This keeps the behavior the same while improving code structure and readability.
+
+The refactoring makes the service easier to extend if new payment methods are added in the future.
