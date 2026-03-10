@@ -1,31 +1,78 @@
 package id.ac.ui.cs.advprog.eshop.controller;
 
+import id.ac.ui.cs.advprog.eshop.model.Order;
+import id.ac.ui.cs.advprog.eshop.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class OrderControllerTest {
 
-    private MockMvc mockMvc;
+    private OrderController orderController;
+    private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new OrderController()).build();
+        orderController = new OrderController();
+        orderService = mock(OrderService.class);
+        ReflectionTestUtils.setField(orderController, "orderService", orderService);
     }
 
     @Test
-    void testCreateOrderPage() throws Exception {
-        mockMvc.perform(get("/order/create"))
-                .andExpect(status().isOk());
+    void testCreateOrderPage() {
+        Model model = new ConcurrentModel();
+        String view = orderController.createOrderPage(model);
+        assertEquals("createOrder", view);
     }
 
     @Test
-    void testOrderHistoryPage() throws Exception {
-        mockMvc.perform(get("/order/history"))
-                .andExpect(status().isOk());
+    void testHistoryFormPage() {
+        String view = orderController.historyFormPage();
+        assertEquals("orderHistoryForm", view);
+    }
+
+    @Test
+    void testOrderPayPage() {
+        Model model = new ConcurrentModel();
+        String view = orderController.orderPayPage("123", model);
+        assertEquals("orderPay", view);
+    }
+
+    @Test
+    void testOrderPaySubmit() {
+        Model model = new ConcurrentModel();
+        String view = orderController.orderPaySubmit("123", model);
+        assertEquals("paymentDetail", view);
+    }
+
+    @Test
+    void testCreateOrderPost() {
+        Order inputOrder = new Order();
+
+        String view = orderController.createOrderPost(inputOrder, "Apple", 3);
+
+        assertEquals("redirect:/order/history", view);
+        verify(orderService, times(1)).createOrder(any(Order.class));
+    }
+
+    @Test
+    void testOrderHistoryListPage() {
+        List<Order> orders = List.of(new Order());
+        when(orderService.findAllByAuthor("Alice")).thenReturn(orders);
+
+        Model model = new ConcurrentModel();
+        String view = orderController.orderHistoryListPage("Alice", model);
+
+        assertEquals("orderHistoryList", view);
+        assertTrue(model.containsAttribute("orders"));
+        assertSame(orders, model.getAttribute("orders"));
+        verify(orderService).findAllByAuthor("Alice");
     }
 }

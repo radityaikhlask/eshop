@@ -75,6 +75,71 @@ class PaymentTest {
     }
 
     @Test
+    void testCreateVoucherPaymentRejectedWhenVoucherCodeMissing() {
+        Payment payment = new Payment(order, "Voucher Code", new HashMap<>());
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreateVoucherPaymentRejectedWhenPrefixInvalid() {
+        Map<String, String> wrongPrefix = new HashMap<>();
+        wrongPrefix.put("voucherCode", "XSHOP1234ABC5678");
+
+        Payment payment = new Payment(order, "Voucher Code", wrongPrefix);
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreateVoucherPaymentRejectedWhenDigitCountInvalid() {
+        Map<String, String> invalidDigits = new HashMap<>();
+        invalidDigits.put("voucherCode", "ESHOPABCDEF12345");
+
+        Payment payment = new Payment(order, "Voucher Code", invalidDigits);
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreateCashOnDeliveryPaymentRejectedWhenAddressMissing() {
+        Map<String, String> invalidCod = new HashMap<>();
+        invalidCod.put("deliveryFee", "10000");
+
+        Payment payment = new Payment(order, "Cash On Delivery", invalidCod);
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreateCashOnDeliveryPaymentRejectedWhenDeliveryFeeMissing() {
+        Map<String, String> invalidCod = new HashMap<>();
+        invalidCod.put("address", "Jl. Margonda Raya");
+
+        Payment payment = new Payment(order, "Cash On Delivery", invalidCod);
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreateCashOnDeliveryPaymentRejectedWhenDeliveryFeeEmpty() {
+        Map<String, String> invalidCod = new HashMap<>();
+        invalidCod.put("address", "Jl. Margonda Raya");
+        invalidCod.put("deliveryFee", "");
+
+        Payment payment = new Payment(order, "Cash On Delivery", invalidCod);
+
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentWithUnknownMethodKeepsStatusNull() {
+        Payment payment = new Payment(order, "Bank Transfer", new HashMap<>());
+
+        assertNull(payment.getStatus());
+    }
+
+    @Test
     void testSetStatus() {
         Payment payment = new Payment(order, "Voucher Code", voucherPaymentData);
 

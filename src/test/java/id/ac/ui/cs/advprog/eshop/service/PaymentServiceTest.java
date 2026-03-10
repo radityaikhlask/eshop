@@ -92,6 +92,16 @@ class PaymentServiceTest {
     }
 
     @Test
+    void testSetStatusUnknownDoesNotChangeOrderStatus() {
+        assertEquals("WAITING_PAYMENT", order.getStatus());
+
+        Payment result = paymentService.setStatus(voucherPayment, "PENDING_REVIEW");
+
+        assertEquals("PENDING_REVIEW", result.getStatus());
+        assertEquals("WAITING_PAYMENT", order.getStatus());
+    }
+
+    @Test
     void testGetPaymentIfFound() {
         doReturn(voucherPayment).when(paymentRepository).findById(voucherPayment.getId());
 
