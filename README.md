@@ -65,3 +65,20 @@ Without interfaces, dependencies cannot be easily replaced or mocked. This makes
 d. Reduced Code Clarity
 If responsibilities are mixed between layers (e.g., controller containing business logic), the system becomes harder to read, scale, and maintain.
 
+Module 4 Reflection
+
+ 1. Reflection on the usefulness of the TDD workflow
+The Test-Driven Development (TDD) workflow used in this exercise was helpful for structuring the development process. By writing the tests first (RED), then implementing the minimal code to pass the tests (GREEN), and finally improving the code structure (REFACTOR), it became easier to focus on the requirements step by step. The tests clearly defined what behavior the code should have before the implementation was written. This also helped detect errors early because the tests immediately showed whether the implementation worked as expected.
+
+However, one difficulty when following TDD in this exercise was that some tests did not compile at first because the related classes had not been created yet. While this is part of the TDD process, it can feel confusing at the beginning. In future implementations, I would try to write smaller and more focused tests, and ensure that the skeleton of the classes exists first so the compilation errors are easier to manage. Overall, the TDD flow helped improve the reliability of the implementation and made the development process more systematic.
+
+ 2. Reflection on the F.I.R.S.T. principles of the tests
+
+The unit tests created in this tutorial generally follow the F.I.R.S.T. principles.
+- Fast: The tests run quickly because they operate on in-memory data structures instead of external systems like databases.
+- Independent: Each test sets up its own data using the `@BeforeEach` method, so the tests do not depend on the results of other tests.
+- Repeatable: The tests can be executed multiple times and produce the same results because they do not rely on external state.
+- Self-validating: Each test uses assertions such as `assertEquals`, `assertThrows`, and `assertNull` to automatically verify correctness.
+- Timely: The tests were written before implementing the actual functionality, which follows the core idea of TDD.
+
+One improvement that could be made is making the tests even more focused on single behaviors, so that each test verifies only one specific condition. This would make failures easier to diagnose. In future test development, I would also try to improve naming clarity and ensure that each test case represents a clear scenario.
