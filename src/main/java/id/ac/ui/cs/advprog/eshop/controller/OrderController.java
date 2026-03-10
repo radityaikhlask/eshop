@@ -58,4 +58,15 @@ public class OrderController {
         model.addAttribute("orders", orders);
         return "orderHistoryList";
     }
+    @GetMapping("/pay/{orderId}")
+    public String orderPayPage(@PathVariable String orderId, Model model) {
+        model.addAttribute("orderId", orderId);
+        return "orderPay";
+    }
+
+    @PostMapping("/pay/{orderId}")
+    public String orderPaySubmit(@PathVariable String orderId, Model model) {
+        model.addAttribute("orderId", orderId);
+        return "paymentDetail";
+    }
 }
